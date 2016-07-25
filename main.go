@@ -14,7 +14,7 @@ import (
 	"os"
 	"path/filepath"
 
-
+	"github.com/hosom/gomandrake/config"
 )
 
 const (
@@ -35,7 +35,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	if configuration, err := ReadConfigFile(*config_path); err != nil {
+	if configuration, err := config.ReadConfigFile(*config_path); err != nil {
 		fmt.Println("An error occurred")
 		os.Exit(1)
 	} else {
