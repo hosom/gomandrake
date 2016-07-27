@@ -13,8 +13,8 @@ type Mandrake struct {
 	consumers		chan string
 }
 
-func NewMandrake() (*Mandrake, err) {
-	return Mandrake{make(chan string)}
+func NewMandrake() (*Mandrake, error) {
+	return Mandrake{make(chan string)}, nil
 }
 
 func (m *Mandrake) ListenAndServe() {
