@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 )
 
 // Config is a json-decoded configuration for running mandrake
@@ -34,4 +35,18 @@ func ReadConfigFile(filename string) (*Config, error) {
 	}
 
 	return &out, nil
+}
+
+// GetInputs looks at the directories in the InputPaths and returns a list of
+// strings containing the available input plugins.
+func (c *Config) GetInputs() []string {
+
+	var plugins []string
+
+	for _, path := range c.InputPaths {
+		files, _ := filepath.Glob(path + "/*")
+		append(plugins, files...)
+	}
+
+	return plugins
 }
