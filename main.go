@@ -49,5 +49,5 @@ func main() {
 
 	m, _ := mandrake.NewMandrake()
 
-	fmt.Println(m)
+	m.ListenAndServe()
 }
