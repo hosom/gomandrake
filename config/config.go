@@ -45,7 +45,7 @@ func (c *Config) GetInputs() []string {
 
 	for _, path := range c.InputPaths {
 		files, _ := filepath.Glob(path + "/*")
-		append(plugins, files...)
+		plugins = append(plugins, files...)
 	}
 
 	return plugins
