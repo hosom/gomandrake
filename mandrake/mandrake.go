@@ -14,7 +14,7 @@ type Mandrake struct {
 }
 
 func NewMandrake() (*Mandrake, error) {
-	return Mandrake{make(chan string)}, nil
+	return *Mandrake{make(chan string)}, nil
 }
 
 func (m *Mandrake) ListenAndServe() {
