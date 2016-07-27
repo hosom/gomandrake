@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 
 	"github.com/hosom/gomandrake/config"
+	"github.com/hosom/gomandrake/mandrake"
 )
 
 const (
@@ -35,13 +36,18 @@ func main() {
 		os.Exit(0)
 	}
 
-	if configuration, err := config.ReadConfigFile(*config_path); err != nil {
+	configuration, err := config.ReadConfigFile(*config_path)
+	if err != nil {
 		fmt.Println("An error occurred")
 		os.Exit(1)
-	} else {
-		fmt.Println(configuration)
-	}
+	} 
+
+	fmt.Println(configuration.GetInputs())
 
 	matches, _ := filepath.Glob("./analyzers/*")
 	fmt.Println(matches)
+
+	m := mandrake.NewMandrake()
+
+	fmt.Println(m)
 }
