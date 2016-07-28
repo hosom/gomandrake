@@ -4,8 +4,6 @@
 package mandrake
 
 import (
-	"log"
-	
 	"github.com/hosom/gomandrake/config"
 	"github.com/hosom/gomandrake/plugin"
 )
@@ -20,5 +18,5 @@ func NewMandrake(c config.Config) (*Mandrake, error) {
 }
 
 func (m *Mandrake) ListenAndServe() {
-	go plugin.CreateListenerAndServe(m.AnalysisPipelinem, m.Input)
+	go plugin.CreateListenerAndServe(m.AnalysisPipeline, m.Input)
 }
