@@ -20,7 +20,7 @@ func ReadConfig(fpath string, config interface{}) (interface{}, error) {
 
 	dec := json.NewDecoder(bytes.NewReader(data))
 	
-	if err := dec.Decode(&config); err != nil {
+	if err := dec.Decode(config); err != nil {
 		return nil, fmt.Errorf("could not decode config file %q: %v", fpath, err)
 	}
 
