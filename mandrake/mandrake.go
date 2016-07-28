@@ -4,8 +4,8 @@
 package mandrake
 
 import (
-	
-	"golang.org/x/exp/inotify"
+	"log"
+	//"golang.org/x/exp/inotify"
 	"github.com/hosom/gomandrake/config"
 	"github.com/hosom/gomandrake/inputs"
 	//"github.com/hosom/gomandrake/plugin"
