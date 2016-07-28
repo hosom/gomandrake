@@ -40,7 +40,7 @@ func ReadConfigFile(filename string) (*Config, error) {
 
 // GetInputs looks at the directories in the InputPaths and returns a list of
 // strings containing the available input plugins.
-func (c *Config) GetInput() []string {
+func (c *Config) GetInputs() []string {
 
 	var plugins []string
 
