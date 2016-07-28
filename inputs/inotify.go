@@ -8,6 +8,8 @@ import (
 	"flag"
 	"path/filepath"
 	"os"
+	"fmt"
+	"log"
 
 	"golang.org/x/exp/inotify"
 	"github.com/hosom/gomandrake/plugin"
@@ -38,11 +40,13 @@ func main() {
 		os.Exit(0)
 	}
 
-	var c config
-	configuration, err := plugin.ReadConfig(config_path, c)
+	var c *config
+	configuration, err := plugin.ReadConfig(*config_path, c)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	c = configuration.(*config)
 
 	i := plugin.NewInput(NAME)
 
@@ -51,13 +55,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = watcher.AddWatch(config.MonitorPath, inotify.IN_CLOSE_WRITE)
+	err = watcher.AddWatch(c.MonitorPath, inotify.IN_CLOSE_WRITE)
 
 	for {
 		select {
 		case ev := <-watcher.Event:
 			i.Analyze(ev.Name)
-		case ev := <-watcher.Error:
+		case err := <-watcher.Error:
 			log.Printf("Error: %s", err)
 		}
 	}
