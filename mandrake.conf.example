@@ -1,4 +1,5 @@
 {
+	"Input" : "inotify",
 	"InputPaths" : ["./inputs"],
 	"AnalyzerPaths" : ["./analyzers"],
 	"LoggerPaths" : ["./loggers"]

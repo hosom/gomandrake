@@ -13,6 +13,7 @@ import (
 
 // Config is a json-decoded configuration for running mandrake
 type Config struct {
+	Input 			string
 	InputPaths 		[]string
 	AnalyzerPaths 	[]string
 	LoggerPaths		[]string
@@ -39,7 +40,7 @@ func ReadConfigFile(filename string) (*Config, error) {
 
 // GetInputs looks at the directories in the InputPaths and returns a list of
 // strings containing the available input plugins.
-func (c *Config) GetInputs() []string {
+func (c *Config) GetInput() []string {
 
 	var plugins []string
 
