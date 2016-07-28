@@ -18,7 +18,7 @@ type Input struct {
 }
 
 func NewInput(name string) *Input {
-	log.SetPrefix(fmt.Sprintf("[%s] "))
+	log.SetPrefix(fmt.Sprintf("[%s] ", name))
 
 	return &Input{name, pie.NewConsumer()}
 }
