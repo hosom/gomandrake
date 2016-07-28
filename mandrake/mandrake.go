@@ -21,7 +21,7 @@ func NewMandrake(c config.Config) (*Mandrake, error) {
 }
 
 func (m *Mandrake) ListenAndServe() {
-	
+	go m.DispatchAnalysis()
 	i := inputs.INotify{"/tmp/", m.AnalysisPipeline}
 	i.Monitor()
 	//plugin.CreateListenerAndServe(m.AnalysisPipeline, m.Input)
