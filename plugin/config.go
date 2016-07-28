@@ -12,7 +12,7 @@ import (
 
 // Generic function for reading configuration files for plugins
 // intended to make plugin development easier.
-func ReadConfig(fpath string, config interface{}) (interface{}, error) {
+func ReadConfig(fpath string, config map[string]string) (map[string]string, error) {
 	data, err := ioutil.ReadFile(fpath)
 	if err != nil {
 		return nil, fmt.Errorf("could not read config file %q: %v", fpath, err)
