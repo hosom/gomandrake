@@ -47,7 +47,7 @@ func main() {
 	matches, _ := filepath.Glob("./analyzers/*")
 	fmt.Println(matches)
 
-	m, _ := mandrake.NewMandrake()
+	m, _ := mandrake.NewMandrake(configuration)
 
 	m.ListenAndServe()
 }
