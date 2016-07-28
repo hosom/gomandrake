@@ -4,8 +4,11 @@
 package mandrake
 
 import (
+	
+	"golang.org/x/exp/inotify"
 	"github.com/hosom/gomandrake/config"
-	"github.com/hosom/gomandrake/plugin"
+	"github.com/hosom/gomandrake/inputs"
+	//"github.com/hosom/gomandrake/plugin"
 )
 
 type Mandrake struct {
@@ -18,5 +21,13 @@ func NewMandrake(c config.Config) (*Mandrake, error) {
 }
 
 func (m *Mandrake) ListenAndServe() {
-	plugin.CreateListenerAndServe(m.AnalysisPipeline, m.Input)
+	
+	i := inputs.INotify{"/tmp/", m.AnalysisPipeline}
+	//plugin.CreateListenerAndServe(m.AnalysisPipeline, m.Input)
+}
+
+func (m *Mandrake) DispatchAnalysis() {	
+	for fpath := range m.AnalysisPipeline {
+		log.Printf("%s", fpath)
+	}
 }
