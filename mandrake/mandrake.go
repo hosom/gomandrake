@@ -5,31 +5,20 @@ package mandrake
 
 import (
 	"log"
-	"net/rpc/jsonrpc"
-	"github.com/natefinch/pie"
+	
+	"github.com/hosom/gomandrake/config"
+	"github.com/hosom/gomandrake/plugin"
 )
 
 type Mandrake struct {
-	consumers		chan string
+	AnalysisPipeline	chan string
+	Input				string
 }
 
-func NewMandrake() (*Mandrake, error) {
-	return &Mandrake{make(chan string)}, nil
+func NewMandrake(c config.Config) (*Mandrake, error) {
+	return &Mandrake{make(chan string), c.Input}, nil
 }
 
 func (m *Mandrake) ListenAndServe() {
-	p := pie.NewProvider()
-	if err := p.RegisterName("mandrake", m); err != nil {
-		log.Fatalf("Failed to register plugin: %s", err)
-	}
-
-	go p.ServeCodec(jsonrpc.NewServerCodec)
-}
-
-func (m *Mandrake) Analyze(fname string, response *string) error {
-	log.Printf("Beginning analysis: %s", fname)
-
-	m.consumers <- fname
-
-	return nil
+	go plugin.CreateListenerAndServe(m.AnalysisPipelinem, m.Input)
 }
