@@ -18,5 +18,5 @@ func NewMandrake(c config.Config) (*Mandrake, error) {
 }
 
 func (m *Mandrake) ListenAndServe() {
-	go plugin.CreateListenerAndServe(m.AnalysisPipeline, m.Input)
+	plugin.CreateListenerAndServe(m.AnalysisPipeline, m.Input)
 }
