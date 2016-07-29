@@ -4,7 +4,6 @@
 package mandrake
 
 import (
-	"fmt"
 	"log"
 	"encoding/json"
 
@@ -54,7 +53,7 @@ func (m Mandrake) DispatchAnalysis() {
 		fs, err := json.Marshal(fmeta)
 
 		for _, analyzer := range m.Analyzers {
-			result, err := analyzer.Analyze(fs)
+			result, err := analyzer.Analyze(string(fs))
 			log.Print(result)
 		}
 
