@@ -27,7 +27,7 @@ type AnalyzerCaller struct {
 	client 		*rpc.Client
 }
 
-func NewAnalyzerCaller(c config.PluginConfig) *AnalyzerCaller {
+func NewAnalyzerCaller(c config.AnalyzerConfig) *AnalyzerCaller {
 	a := AnalyzerCaller{}
 	a.Path = c.Path
 	a.Name = filepath.Base(a.Path)
