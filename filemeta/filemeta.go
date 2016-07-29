@@ -4,6 +4,7 @@
 package filemeta
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"crypto/md5"
@@ -65,5 +66,9 @@ func multihash(fpath string) (string, string, string, error) {
 		return "", "", "", err
 	}
 
-	return string(md5_hasher.Sum(nil)), string(sha1_hasher.Sum(nil)), string(sha256_hasher.Sum(nil)), nil
+	md5sum := fmt.Sprintf("%x", md5_hasher.Sum(nil))
+	sha1sum := fmt.Sprintf("%x", sha1_hasher.Sum(nil))
+	sha256sum := fmt.Sprintf("%x", sha256_hasher.Sum(nil))
+
+	return md5sum, sha1sum, sha256sum, nil
 }
