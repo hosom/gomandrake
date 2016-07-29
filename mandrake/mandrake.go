@@ -36,8 +36,11 @@ func (m Mandrake) ListenAndServe() {
 // that it can be analyzed.
 func (m Mandrake) DispatchAnalysis() {	
 	for fpath := range m.AnalysisPipeline {
-		f := filemeta.NewFileMeta(f)
-		log.Printf(f)
+		fmeta, err := filemeta.NewFileMeta(fpath)
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(fmeta)
 		log.Printf("%s", fpath)
 	}
 }
