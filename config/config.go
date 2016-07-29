@@ -19,6 +19,13 @@ type Config struct {
 	LoggerPaths			[]string
 }
 
+type PluginConfig struct {
+	Path				string
+	Args				[]string
+	Priority			int
+	MimeFilter			string
+}
+
 // ReadConfigFile reads in the given JSON encoded configuration file and
 // returns the Config object associated with the decoded configuration data.
 func ReadConfigFile(filename string) (*Config, error) {
@@ -36,18 +43,4 @@ func ReadConfigFile(filename string) (*Config, error) {
 	}
 
 	return &out, nil
-}
-
-// GetInputs looks at the directories in the InputPaths and returns a list of
-// strings containing the available input plugins.
-func (c *Config) GetInputs() []string {
-
-	var plugins []string
-
-	for _, path := range c.InputPaths {
-		files, _ := filepath.Glob(path + "/*")
-		plugins = append(plugins, files...)
-	}
-
-	return plugins
 }
