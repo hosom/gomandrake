@@ -8,17 +8,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"path/filepath"
 )
 
 // Config is a json-decoded configuration for running mandrake
 type Config struct {
 	MonitoredDirectory 	string
-	InputPaths 			[]string
-	AnalyzerPaths 		[]string
-	LoggerPaths			[]string
+	Plugins				[]PluginConfig
 }
 
+// PluginConfig is a json-decoded configuration for a plugin
 type PluginConfig struct {
 	Path				string
 	Args				[]string

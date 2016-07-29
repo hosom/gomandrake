@@ -25,25 +25,25 @@ type FileMeta struct {
 
 // NewFileMeta creates and returns a FileMeta struct with all fields
 // populated.
-func NewFileMeta(fpath string) (f FileMeta, err error) {
-	f := new(FileMeta)
-	f.Filepath = fpath
+func NewFileMeta(fpath string) (fmeta FileMeta, err error) {
+	fmeta = FileMeta{}
+	fmeta.Filepath = fpath
 
 	// Get the mime_type of the file utilizing libmagic
 	m, err := magic.Open(magic.MAGIC_MIME_TYPE)
 	if err != nil {
-		return f, err
+		return fmeta, err
 	}
 
-	f.Mime, _ := m.File(fname)
+	fmeta.Mime, _ = m.File(fpath)
 
 	// Get all hashes for the file
-	f.Md5, f.Sha1, f.Sha256, err := multihash(fpath)
+	fmeta.Md5, fmeta.Sha1, fmeta.Sha256, err = multihash(fpath)
 	if err != nil {
-		return f, err
+		return fmeta, err
 	}
 
-	return f, nil
+	return fmeta, nil
 }
 
 // multihash hashes a file through multiple hashing algorithms in a single
@@ -52,7 +52,7 @@ func NewFileMeta(fpath string) (f FileMeta, err error) {
 func multihash(fpath string) (string, string, string, error) {
 	r, err := os.Open(fpath)
 	if err != nil {
-		return nil, nil, nil, err
+		return "", "", "", err
 	}
 	defer r.Close()
 
@@ -62,8 +62,8 @@ func multihash(fpath string) (string, string, string, error) {
 
 	w := io.MultiWriter(md5_hasher, sha1_hasher, sha256_hasher)
 	if _, err = io.Copy(w, r); err != nil {
-		return nil, nil, nil, err
+		return "", "", "", err
 	}
 
-	return md5_hasher.Sum(nil), sha1_hasher.Sum(nil), sha256_hasher.Sum(nil), nil
+	return string(md5_hasher.Sum(nil)), string(sha1_hasher.Sum(nil)), string(sha256_hasher.Sum(nil)), nil
 }
