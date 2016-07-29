@@ -71,34 +71,3 @@ func (l LoggerCaller) Log(msg string) (result string, err error) {
 	
 	return result, err
 }
-
-// PluginListener is a struct wrapper for listeners intended to be utilized
-// in conjunction with Input plugins
-type PluginListener struct {
-	pipeline	chan string
-}
-
-func NewPluginListener(c chan string) *PluginListener {
-	return &PluginListener{c}
-}
-
-func CreateListenerAndServe(c chan string, fpath string) {
-	l := NewPluginListener(c)
-	s, err := pie.StartConsumer(os.Stderr, fpath)
-	if err != nil {
-		log.Fatalf("Failed to initialize input %s: %s", fpath, err)
-	}
-
-	if err := s.RegisterName("mandrake", l); err != nil {
-		log.Fatalf("Failed to register mandrake name: %s", err)
-	}
-	s.ServeCodec(jsonrpc.NewServerCodec)
-}
-
-// Analyze sends a file path into the analysis pipeline for it to be analyzed
-func (p PluginListener) Analyze(fpath string, response *string) error {
-	log.Printf("Request for analysis received: %s", fpath)
-	p.pipeline <- fpath
-	
-	return nil
-}
