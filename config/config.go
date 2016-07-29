@@ -21,7 +21,7 @@ type PluginConfig struct {
 	Path				string
 	Args				[]string
 	Priority			int
-	MimeFilter			string
+	MimeFilter			[]string
 }
 
 // ReadConfigFile reads in the given JSON encoded configuration file and
