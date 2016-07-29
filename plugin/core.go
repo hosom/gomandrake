@@ -27,7 +27,7 @@ type AnalyzerCaller struct {
 	client 		*rpc.Client
 }
 
-func NewAnalyzerCaller(c config.AnalyzerConfig) *AnalyzerCaller {
+func NewAnalyzerCaller(c config.AnalyzerConfig) AnalyzerCaller {
 	a := AnalyzerCaller{}
 	a.Path = c.Path
 	a.Name = filepath.Base(a.Path)
@@ -40,7 +40,7 @@ func NewAnalyzerCaller(c config.AnalyzerConfig) *AnalyzerCaller {
 	}
 
 	a.client = client
-	return &a
+	return a
 }
 
 // Analyze sends a filepath location to an analyzer plugin for the plugin

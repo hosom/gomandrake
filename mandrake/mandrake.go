@@ -17,16 +17,16 @@ import (
 type Mandrake struct {
 	AnalysisPipeline	chan string
 	MonitoredDirectory	string
-	Analyzers			[]plugin.AnalyzerCaller
+	Analyzers			[]*plugin.AnalyzerCaller
 }
 
 // NewMandrake creates and returns a Mandrake struct utilizing a passed 
 // parsed configuration file to create the correct fields.
 func NewMandrake(c config.Config) Mandrake {
 	analyzers := []*plugin.AnalyzerCaller{}
-	for _, plug := range c.Plugins {
-		p := plugin.NewAnalyzerCaller(plug)
-		analyzers = Append(analyzers, plug)
+	for _, plug := range c.Analyzers {
+		analyzer := plugin.NewAnalyzerCaller(plug)
+		analyzers = append(analyzers, analyzer)
 	}
 
 	return Mandrake{make(chan string), c.MonitoredDirectory, analyzers}
