@@ -13,10 +13,10 @@ import (
 
 // Config is a json-decoded configuration for running mandrake
 type Config struct {
-	Input 			string
-	InputPaths 		[]string
-	AnalyzerPaths 	[]string
-	LoggerPaths		[]string
+	MonitoredDirectory 	string
+	InputPaths 			[]string
+	AnalyzerPaths 		[]string
+	LoggerPaths			[]string
 }
 
 // ReadConfigFile reads in the given JSON encoded configuration file and
