@@ -54,6 +54,9 @@ func (m Mandrake) DispatchAnalysis() {
 
 		for _, analyzer := range m.Analyzers {
 			result, err := analyzer.Analyze(string(fs))
+			if err != nil {
+				log.Print(err)
+			}
 			log.Print(result)
 		}
 
