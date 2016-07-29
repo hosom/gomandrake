@@ -20,6 +20,7 @@ func NewMandrake(c config.Config) (*Mandrake, error) {
 }
 
 func (m Mandrake) ListenAndServe() {
+	log.SetPrefix("[mandrake] ")
 	go m.DispatchAnalysis()
 	m.Monitor()
 }
