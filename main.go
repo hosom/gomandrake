@@ -40,13 +40,8 @@ func main() {
 	if err != nil {
 		fmt.Println("An error occurred")
 		os.Exit(1)
-	} 
-
-	matches, _ := filepath.Glob("./analyzers/*")
-	fmt.Println(matches)
+	}
 
 	m := mandrake.NewMandrake(*configuration)
-
-	fmt.Println(m)
 	m.ListenAndServe()
 }

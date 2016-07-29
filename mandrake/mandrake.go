@@ -5,6 +5,7 @@ package mandrake
 
 import (
 	"log"
+	"encoding/json"
 
 	"golang.org/x/exp/inotify"
 	"github.com/hosom/gomandrake/config"
@@ -40,7 +41,10 @@ func (m Mandrake) DispatchAnalysis() {
 		if err != nil {
 			log.Println(err)
 		}
-		log.Println(fmeta)
+
+		fs, err := json.Marshal(fmeta)
+
+		log.Println(string(fs))
 		log.Printf("%s", fpath)
 	}
 }
