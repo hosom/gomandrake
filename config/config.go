@@ -20,7 +20,6 @@ type Config struct {
 type PluginConfig struct {
 	Path				string
 	Args				[]string
-	Priority			int
 	MimeFilter			[]string
 }
 
