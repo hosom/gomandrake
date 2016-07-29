@@ -54,7 +54,7 @@ func (m Mandrake) DispatchAnalysis() {
 		fs, err := json.Marshal(fmeta)
 
 		for _, analyzer := range m.Analyzers {
-			result, err := analyzer.Analyze(fmeta)
+			result, err := analyzer.Analyze(fs)
 			log.Print(result)
 		}
 
