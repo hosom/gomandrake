@@ -1,6 +1,4 @@
 {
 	"MonitoredDirectory" : "/tmp",
-	"InputPaths" : ["./inputs"],
-	"AnalyzerPaths" : ["./analyzers"],
-	"LoggerPaths" : ["./loggers"]
+	"Plugins" : []
 }
