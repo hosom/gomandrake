@@ -23,8 +23,10 @@ type Mandrake struct {
 // NewMandrake creates and returns a Mandrake struct utilizing a passed 
 // parsed configuration file to create the correct fields.
 func NewMandrake(c config.Config) Mandrake {
+	log.Println(c.Analyzers)
 	analyzers := []plugin.AnalyzerCaller{}
 	for _, plug := range c.Analyzers {
+		log.Println(plug)
 		analyzer := plugin.NewAnalyzerCaller(plug)
 		analyzers = append(analyzers, analyzer)
 	}
@@ -36,6 +38,7 @@ func NewMandrake(c config.Config) Mandrake {
 // including Monitor() and DispatchAnalysis(). 
 func (m Mandrake) ListenAndServe() {
 	log.SetPrefix("[mandrake] ")
+	log.Println(m.Analyzers)
 	go m.DispatchAnalysis()
 	m.Monitor()
 }
