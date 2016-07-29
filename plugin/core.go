@@ -14,34 +14,40 @@ import (
 	"path/filepath"
 
 	"github.com/natefinch/pie"
+	"github.com/hosom/gomandrake/config"
 )
 
 // AnalyzerCaller is a wrapper specifically intended to be utilized for 
 // wrapping Analyzer plugins.
 type AnalyzerCaller struct {
+	Name 		string
 	Path 		string
 	Args 		[]string
 	MimeFilter	[]string
 	client 		*rpc.Client
 }
 
-func NewAnalyzerCaller(fpath string) *AnalyzerCaller {
-	name := filepath.Base(fpath)
-	client, err := pie.StartProviderCodec(jsonrpc.NewClientCodec, os.Stderr, fpath)
+func NewAnalyzerCaller(c config.PluginConfig) *AnalyzerCaller {
+	a := AnalyzerCaller{}
+	a.Path = c.Path
+	a.Name = filepath.Base(a.Path)
+	a.Args = c.Args
+	a.MimeFilter = c.MimeFilter
+
+	client, err := pie.StartProviderCodec(jsonrpc.NewClientCodec, os.Stderr, a.Path, a.Args...)
 	if err != nil {
-		log.Fatalf("Error starting plugin: %s", name)
+		log.Fatalf("Error starting plugin: %s", a.Name)
 	}
 
-	defer client.Close()
-
-	return &AnalyzerCaller{name, client}
+	a.client = client
+	return &a
 }
 
 // Analyze sends a filepath location to an analyzer plugin for the plugin
 // to perform analysis on.
-func  (a AnalyzerCaller) Analyze(fpath string) (result string, err error) {
+func  (a AnalyzerCaller) Analyze(fmeta string) (result string, err error) {
 	log.Printf("Dispatching call to analyzer: %s", a.Name)
-	err = a.client.Call(fmt.Sprintf("%s.Analyze", a.Name), fpath, &result)
+	err = a.client.Call(fmt.Sprintf("%s.Analyze", a.Name), fmeta, &result)
 	
 	return result, err
 }
@@ -59,8 +65,6 @@ func NewLoggerCaller(fpath string) *LoggerCaller {
 	if err != nil {
 		log.Fatalf("Error starting plugin: %s", name)
 	}
-
-	defer client.Close()
 
 	return &LoggerCaller{name, client}
 }
