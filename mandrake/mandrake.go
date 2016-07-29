@@ -21,7 +21,7 @@ func NewMandrake(c config.Config) (*Mandrake, error) {
 
 func (m Mandrake) ListenAndServe() {
 	go m.DispatchAnalysis()
-	go m.Monitor()
+	m.Monitor()
 }
 
 func (m Mandrake) DispatchAnalysis() {	
@@ -31,11 +31,13 @@ func (m Mandrake) DispatchAnalysis() {
 }
 
 func (m Mandrake) Monitor() {
+	log.Println("starting inotify watcher")
 	watcher, err := inotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	log.Printf("adding watcher to %s directory", m.MonitoredDirectory)
 	err = watcher.AddWatch(m.MonitoredDirectory, inotify.IN_CLOSE_WRITE)
 	if err != nil {
 		log.Fatal(err)
