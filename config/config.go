@@ -12,12 +12,12 @@ import (
 
 // Config is a json-decoded configuration for running mandrake
 type Config struct {
-	MonitoredDirectory 	string
-	Plugins				[]PluginConfig
+	MonitoredDirectory 		string
+	Analyzers				[]AnalyzerConfig
 }
 
-// PluginConfig is a json-decoded configuration for a plugin
-type PluginConfig struct {
+// AnalyzerConfig is a json-decoded configuration for a plugin
+type AnalyzerConfig struct {
 	Path				string
 	Args				[]string
 	MimeFilter			[]string
