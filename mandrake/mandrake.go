@@ -8,6 +8,7 @@ import (
 
 	"golang.org/x/exp/inotify"
 	"github.com/hosom/gomandrake/config"
+	"github.com/hosom/gomandrake/filemeta"
 	//"github.com/hosom/gomandrake/plugin"
 )
 
@@ -35,6 +36,8 @@ func (m Mandrake) ListenAndServe() {
 // that it can be analyzed.
 func (m Mandrake) DispatchAnalysis() {	
 	for fpath := range m.AnalysisPipeline {
+		f := filemeta.NewFileMeta(f)
+		log.Printf(f)
 		log.Printf("%s", fpath)
 	}
 }
