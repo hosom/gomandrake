@@ -42,12 +42,11 @@ func main() {
 		os.Exit(1)
 	} 
 
-	fmt.Println(configuration.GetInputs())
-
 	matches, _ := filepath.Glob("./analyzers/*")
 	fmt.Println(matches)
 
 	m, _ := mandrake.NewMandrake(*configuration)
 
+	fmt.Println(m)
 	m.ListenAndServe()
 }
