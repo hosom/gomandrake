@@ -10,19 +10,26 @@ import (
 	"golang.org/x/exp/inotify"
 	"github.com/hosom/gomandrake/config"
 	"github.com/hosom/gomandrake/filemeta"
-	//"github.com/hosom/gomandrake/plugin"
+	"github.com/hosom/gomandrake/plugin"
 )
 
 // Mandrake is a wrapper struct for the bulk of the application logic
 type Mandrake struct {
 	AnalysisPipeline	chan string
 	MonitoredDirectory	string
+	Analyzers			[]plugin.AnalyzerCaller
 }
 
 // NewMandrake creates and returns a Mandrake struct utilizing a passed 
 // parsed configuration file to create the correct fields.
 func NewMandrake(c config.Config) Mandrake {
-	return Mandrake{make(chan string), c.MonitoredDirectory}
+	analyzers := []*plugin.AnalyzerCaller{}
+	for _, plug := range c.Plugins {
+		p := plugin.NewAnalyzerCaller(plug)
+		analyzers = Append(analyzers, plug)
+	}
+
+	return Mandrake{make(chan string), c.MonitoredDirectory, analyzers}
 }
 
 // ListenAndServe starts the goroutines that perform all of the heavy lifting

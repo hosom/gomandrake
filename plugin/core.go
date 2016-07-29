@@ -19,7 +19,9 @@ import (
 // AnalyzerCaller is a wrapper specifically intended to be utilized for 
 // wrapping Analyzer plugins.
 type AnalyzerCaller struct {
-	Name		string
+	Path 		string
+	Args 		[]string
+	MimeFilter	[]string
 	client 		*rpc.Client
 }
 
