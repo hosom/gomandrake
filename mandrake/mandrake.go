@@ -18,18 +18,25 @@ type Mandrake struct {
 	AnalysisPipeline	chan string
 	MonitoredDirectory	string
 	Analyzers			[]plugin.AnalyzerCaller
+	AnalyzerFilter		map[string][]plugin.AnalyzerCaller
 }
+
 
 // NewMandrake creates and returns a Mandrake struct utilizing a passed 
 // parsed configuration file to create the correct fields.
 func NewMandrake(c config.Config) Mandrake {
 	analyzers := []plugin.AnalyzerCaller{}
+	filter := make(map[string][]plugin.AnalyzerCaller)
 	for _, plug := range c.Analyzers {
 		analyzer := plugin.NewAnalyzerCaller(plug)
 		analyzers = append(analyzers, analyzer)
+
+		for _, mime := range analyzer.MimeFilter {
+			filter[mime] = append(filter[mime], analyzer)
+		}
 	}
 
-	return Mandrake{make(chan string), c.MonitoredDirectory, analyzers}
+	return Mandrake{make(chan string), c.MonitoredDirectory, analyzers, filter}
 }
 
 // ListenAndServe starts the goroutines that perform all of the heavy lifting
