@@ -116,6 +116,7 @@ func (m Mandrake) Monitor() {
 // MapFromJSON accepts an anonymous JSON object as a string and returns the
 // resulting Map
 func MapFromJSON(s string) map[string]interface{} {
+	log.Printf("Performing mapping with string: %s", s)
 	var f interface{}
 	json.Unmarshal([]byte(s), &f)
 	m := f.(map[string]interface{})
