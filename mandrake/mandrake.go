@@ -59,10 +59,20 @@ func (m Mandrake) DispatchAnalysis() {
 			log.Println(err)
 		}
 
+		// Create JSON filemeta object to pass to plugins so that plugins
+		// receive basic contextual information about the file.
 		fs, err := json.Marshal(fmeta)
 
-		for _, analyzer := range m.Analyzers {
+		for _, analyzer := range m.AnalyzerFilter["all"] {
 			result, err := analyzer.Analyze(string(fs))
+			if err != nil {
+				log.Print(err)
+			}
+			log.Print(result)
+		}
+
+		for _, analyzer := range m.AnalyzerFilter[fmeta.Mime] {
+			result, err := analyzer.ANalyze(string(fs))
 			if err != nil {
 				log.Print(err)
 			}
