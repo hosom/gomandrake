@@ -70,7 +70,7 @@ func (m Mandrake) DispatchAnalysis() {
 			if err != nil {
 				log.Print(err)
 			}
-			analysis = append(analysis, MapFromJson(result))
+			analysis = append(analysis, MapFromJSON(result))
 		}
 
 		for _, analyzer := range m.AnalyzerFilter[fmeta.Mime] {
@@ -78,7 +78,7 @@ func (m Mandrake) DispatchAnalysis() {
 			if err != nil {
 				log.Print(err)
 			}
-			analysis = append(analysis, MapFromJson(result))
+			analysis = append(analysis, MapFromJSON(result))
 		}
 
 		log.Println(json.Marshal(analysis))
