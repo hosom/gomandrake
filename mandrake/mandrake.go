@@ -63,15 +63,14 @@ func (m Mandrake) DispatchAnalysis() {
 		// receive basic contextual information about the file.
 		fs, err := json.Marshal(fmeta)
 
-		var analysis map[string]map[string]interface{}
+		var analysis []map[string]interface{}
 
 		for _, analyzer := range m.AnalyzerFilter["all"] {
 			result, err := analyzer.Analyze(string(fs))
 			if err != nil {
 				log.Print(err)
 			}
-			analysis[analyzer.Name] = make(map[string]interface{})
-			analysis[analyzer.Name] = MapFromJSON(result)
+			analysis = append(analysis, MapFromJson(result))
 		}
 
 		for _, analyzer := range m.AnalyzerFilter[fmeta.Mime] {
@@ -79,8 +78,7 @@ func (m Mandrake) DispatchAnalysis() {
 			if err != nil {
 				log.Print(err)
 			}
-			analysis[analyzer.Name] = make(map[string]interface{})
-			analysis[analyzer.Name] = MapFromJSON(result)
+			analysis = append(analysis, MapFromJson(result))
 		}
 
 		log.Println(json.Marshal(analysis))
