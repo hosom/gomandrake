@@ -70,6 +70,7 @@ func (m Mandrake) DispatchAnalysis() {
 			if err != nil {
 				log.Print(err)
 			}
+			analysis[analyzer.Name] = make(map[string]interface{})
 			analysis[analyzer.Name] = MapFromJSON(result)
 		}
 
@@ -78,6 +79,7 @@ func (m Mandrake) DispatchAnalysis() {
 			if err != nil {
 				log.Print(err)
 			}
+			analysis[analyzer.Name] = make(map[string]interface{})
 			analysis[analyzer.Name] = MapFromJSON(result)
 		}
 
