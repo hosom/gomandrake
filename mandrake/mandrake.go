@@ -63,12 +63,14 @@ func (m Mandrake) DispatchAnalysis() {
 		// receive basic contextual information about the file.
 		fs, err := json.Marshal(fmeta)
 
+		var analysis map[string]interface{}
+
 		for _, analyzer := range m.AnalyzerFilter["all"] {
 			result, err := analyzer.Analyze(string(fs))
 			if err != nil {
 				log.Print(err)
 			}
-			log.Print(result)
+			analysis[analyzer.Name] = MapFromJSON(result)
 		}
 
 		for _, analyzer := range m.AnalyzerFilter[fmeta.Mime] {
@@ -76,9 +78,10 @@ func (m Mandrake) DispatchAnalysis() {
 			if err != nil {
 				log.Print(err)
 			}
-			log.Print(result)
+			analysis[analyzer.Name] = MapFromJSON(result)
 		}
 
+		log.Println(json.Marshal(analysis))
 		log.Println(string(fs))
 		log.Printf("%s", fpath)
 	}
@@ -108,4 +111,12 @@ func (m Mandrake) Monitor() {
 			log.Printf("inotify error: %s", err)
 		}
 	}
+}
+
+// MapFromJSON accepts an anonymous JSON object as a string and returns the
+// resulting Map
+func MapFromJSON(s string) map[string]interface{} {
+	var f interface{}
+	json.Unmarshal([]byte(s), &f)
+	m := f.(map[string]interface{})
 }
