@@ -72,7 +72,7 @@ func (m Mandrake) DispatchAnalysis() {
 		}
 
 		for _, analyzer := range m.AnalyzerFilter[fmeta.Mime] {
-			result, err := analyzer.ANalyze(string(fs))
+			result, err := analyzer.Analyze(string(fs))
 			if err != nil {
 				log.Print(err)
 			}
