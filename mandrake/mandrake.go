@@ -29,8 +29,10 @@ func NewMandrake(c config.Config) Mandrake {
 	filter := make(map[string][]plugin.AnalyzerCaller)
 	for _, plug := range c.Analyzers {
 		analyzer := plugin.NewAnalyzerCaller(plug)
+		// Build a slice of all AnalyzerCaller structs
 		analyzers = append(analyzers, analyzer)
 
+		// Create a map to function as a mime_type filter for analyzers
 		for _, mime := range analyzer.MimeFilter {
 			filter[mime] = append(filter[mime], analyzer)
 		}

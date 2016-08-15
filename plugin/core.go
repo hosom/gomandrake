@@ -27,12 +27,29 @@ type AnalyzerCaller struct {
 	client 		*rpc.Client
 }
 
+// allTypeAnalyzer is a function to check if a plugin should be ran against
+// all mimetypes. If this is the case, then we will make some behind the 
+// scenes configuration optimizations to prevent multiple executions of the
+// same plugin.
+func allTypeAnalyzer(m []string) bool {
+	for _, filter := range m {
+		if filter == "all" {
+			return true
+		}
+	}
+	return false
+}
+
 func NewAnalyzerCaller(c config.AnalyzerConfig) AnalyzerCaller {
 	a := AnalyzerCaller{}
 	a.Path = c.Path
 	a.Name = filepath.Base(a.Path)
 	a.Args = c.Args
-	a.MimeFilter = c.MimeFilter
+	if allTypeAnalyzer(c.MimeFilter) == true {
+		a.MimeFilter = []string{"all"}
+	} else {
+		a.MimeFilter = c.MimeFilter
+	}
 
 	client, err := pie.StartProviderCodec(jsonrpc.NewClientCodec, os.Stderr, a.Path, a.Args...)
 	if err != nil {
