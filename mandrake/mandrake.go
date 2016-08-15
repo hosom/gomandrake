@@ -119,4 +119,5 @@ func MapFromJSON(s string) map[string]interface{} {
 	var f interface{}
 	json.Unmarshal([]byte(s), &f)
 	m := f.(map[string]interface{})
+	return m
 }
