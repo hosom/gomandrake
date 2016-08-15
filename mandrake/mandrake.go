@@ -120,5 +120,6 @@ func MapFromJSON(s string) map[string]interface{} {
 	var f interface{}
 	json.Unmarshal([]byte(s), &f)
 	m := f.(map[string]interface{})
+	log.Printf("Mapping complete: %s", m)
 	return m
 }
