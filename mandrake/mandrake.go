@@ -81,7 +81,7 @@ func (m Mandrake) DispatchAnalysis() {
 			analysis = append(analysis, MapFromJSON(result))
 		}
 
-		log.Println(json.Marshal(analysis))
+		log.Println(string(json.Marshal(analysis)))
 		log.Println(string(fs))
 		log.Printf("%s", fpath)
 	}
