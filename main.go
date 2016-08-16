@@ -38,7 +38,8 @@ func main() {
 
 	configuration, err := config.ReadConfigFile(*config_path)
 	if err != nil {
-		fmt.Println("An error occurred")
+		fmt.Println("Error accessing configuration file.")
+		fmt.Println("Check your config path and permissions.")
 		os.Exit(1)
 	}
 
