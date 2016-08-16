@@ -62,11 +62,13 @@ func (m Mandrake) DispatchAnalysis() {
 		// Create JSON filemeta object to pass to plugins so that plugins
 		// receive basic contextual information about the file.
 		fs, err := json.Marshal(fmeta)
+		// Finalize string form of JSON filemeta to pass to plugins
+		fstring := string(fs)
 
 		var analysis []map[string]interface{}
 
 		for _, analyzer := range m.AnalyzerFilter["all"] {
-			result, err := analyzer.Analyze(string(fs))
+			result, err := analyzer.Analyze(fstring)
 			if err != nil {
 				log.Print(err)
 			}
@@ -74,15 +76,18 @@ func (m Mandrake) DispatchAnalysis() {
 		}
 
 		for _, analyzer := range m.AnalyzerFilter[fmeta.Mime] {
-			result, err := analyzer.Analyze(string(fs))
+			result, err := analyzer.Analyze(fstring)
 			if err != nil {
 				log.Print(err)
 			}
 			analysis = append(analysis, MapFromJSON(result))
 		}
 
-		l, _ := json.Marshal(analysis)
-		log.Println(string(l))
+		report := MapFromJSON(fstring)
+		report["analysis"] = analysis
+
+		r, _ := json.Marshal(report)
+		log.Println(string(r))
 		log.Println(string(fs))
 		log.Printf("%s", fpath)
 	}
