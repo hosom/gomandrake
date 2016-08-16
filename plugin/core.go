@@ -97,7 +97,7 @@ func NewLoggerCaller(c config.LoggerConfig) LoggerCaller {
 // has been completed.
 func (l LoggerCaller) Log(msg string) (result string, err error) {
 	log.Printf("Dispatching call to logger: %s", l.Name)
-	err = l.client.Call(fmt.Sprintf("%s.Analyze", l.Name), msg, &result)
+	err = l.client.Call(fmt.Sprintf("%s.Log", l.Name), msg, &result)
 	
 	return result, err
 }
