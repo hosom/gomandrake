@@ -46,7 +46,7 @@ func NewMandrake(c config.Config) Mandrake {
 		loggers = append(loggers, logger)
 	}
 
-	return Mandrake{make(chan string), c.MonitoredDirectory, analyzers, filter, loggers}
+	return Mandrake{make(chan string), make(chan string), c.MonitoredDirectory, analyzers, filter, loggers}
 }
 
 // ListenAndServe starts the goroutines that perform all of the heavy lifting
@@ -104,7 +104,7 @@ func (m Mandrake) Analysis(fpath string) {
 	r, _ := json.Marshal(report)
 
 	log.Printf("Analysis of %s complete", fpath)
-	m.LoggingPipeline <- string(report)
+	m.LoggingPipeline <- string(r)
 	log.Printf("File analysis sent to logging pipeline.")
 }
 
@@ -113,7 +113,7 @@ func (m Mandrake) Analysis(fpath string) {
 func (m Mandrake) DispatchLogging() {
 	for record := range m.LoggingPipeline {
 		for _, logger := range m.Loggers {
-			result, err := logger.Log(record)
+			_, err := logger.Log(record)
 			if err != nil {
 				log.Print(err)
 			}
