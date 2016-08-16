@@ -54,43 +54,49 @@ func (m Mandrake) ListenAndServe() {
 // that it can be analyzed.
 func (m Mandrake) DispatchAnalysis() {	
 	for fpath := range m.AnalysisPipeline {
-		fmeta, err := filemeta.NewFileMeta(fpath)
-		if err != nil {
-			log.Println(err)
-		}
-
-		// Create JSON filemeta object to pass to plugins so that plugins
-		// receive basic contextual information about the file.
-		fs, err := json.Marshal(fmeta)
-		// Finalize string form of JSON filemeta to pass to plugins
-		fstring := string(fs)
-
-		var analysis []map[string]interface{}
-
-		for _, analyzer := range m.AnalyzerFilter["all"] {
-			result, err := analyzer.Analyze(fstring)
-			if err != nil {
-				log.Print(err)
-			}
-			analysis = append(analysis, MapFromJSON(result))
-		}
-
-		for _, analyzer := range m.AnalyzerFilter[fmeta.Mime] {
-			result, err := analyzer.Analyze(fstring)
-			if err != nil {
-				log.Print(err)
-			}
-			analysis = append(analysis, MapFromJSON(result))
-		}
-
-		report := MapFromJSON(fstring)
-		report["analysis"] = analysis
-
-		r, _ := json.Marshal(report)
-		log.Println(string(r))
-		log.Println(string(fs))
-		log.Printf("%s", fpath)
+		go m.Analysis(fpath)
 	}
+}
+
+// Analysis is the method that kicks off all of the analysis plugins
+// this is utilized so that each file can be analyzed in a goroutine
+func (m Mandrake) Analysis(fpath string) {
+	fmeta, err := filemeta.NewFileMeta(fpath)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Create JSON filemeta object to pass to plugins so that plugins
+	// receive basic contextual information about the file.
+	fs, err := json.Marshal(fmeta)
+	// Finalize string form of JSON filemeta to pass to plugins
+	fstring := string(fs)
+
+	var analysis []map[string]interface{}
+
+	for _, analyzer := range m.AnalyzerFilter["all"] {
+		result, err := analyzer.Analyze(fstring)
+		if err != nil {
+			log.Print(err)
+		}
+		analysis = append(analysis, MapFromJSON(result))
+	}
+
+	for _, analyzer := range m.AnalyzerFilter[fmeta.Mime] {
+		result, err := analyzer.Analyze(fstring)
+		if err != nil {
+			log.Print(err)
+		}
+		analysis = append(analysis, MapFromJSON(result))
+	}
+
+	report := MapFromJSON(fstring)
+	report["analysis"] = analysis
+
+	r, _ := json.Marshal(report)
+	log.Println(string(r))
+	log.Println(string(fs))
+	log.Printf("%s", fpath)
 }
 
 // Monitor uses inotify to monitor the MonitoredDirectory for IN_CLOSE_WRITE
