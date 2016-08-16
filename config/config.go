@@ -14,6 +14,7 @@ import (
 type Config struct {
 	MonitoredDirectory 		string
 	Analyzers				[]AnalyzerConfig
+	Loggers					[]LoggerConfig
 }
 
 // AnalyzerConfig is a json-decoded configuration for a plugin
@@ -21,6 +22,12 @@ type AnalyzerConfig struct {
 	Path				string
 	Args				[]string
 	MimeFilter			[]string
+}
+
+// LoggerConfig is a json-decoded configuration for a logger plugin
+type LoggerConfig struct {
+	Path				string
+	Args				[]string
 }
 
 // ReadConfigFile reads in the given JSON encoded configuration file and

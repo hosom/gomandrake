@@ -73,17 +73,24 @@ func  (a AnalyzerCaller) Analyze(fmeta string) (result string, err error) {
 // wrapping Logger plugins.
 type LoggerCaller struct {
 	Name 		string
+	Path 		string
+	Args		[]string
 	client 		*rpc.Client
 }
 
-func NewLoggerCaller(fpath string) *LoggerCaller {
-	name := filepath.Base(fpath)
-	client, err := pie.StartProviderCodec(jsonrpc.NewClientCodec, os.Stderr, fpath)
+func NewLoggerCaller(c config.LoggerConfig) LoggerCaller {
+	l := LoggerCaller{}
+	l.Path = c.Path
+	l.Name = filepath.Base(l.Path)
+	l.Args = c.Args
+
+	client, err := pie.StartProviderCodec(jsonrpc.NewClientCodec, os.Stderr, l.Path, l.Args...)
 	if err != nil {
-		log.Fatalf("Error starting plugin: %s", name)
+		log.Fatalf("Error starting plugin: %s", l.Name)
 	}
 
-	return &LoggerCaller{name, client}
+	l.client = client 
+	return l
 }
 
 // Log sends a json message to a logger plugin describing analysis that 

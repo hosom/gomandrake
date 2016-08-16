@@ -19,6 +19,7 @@ type Mandrake struct {
 	MonitoredDirectory	string
 	Analyzers			[]plugin.AnalyzerCaller
 	AnalyzerFilter		map[string][]plugin.AnalyzerCaller
+	Loggers				[]plugin.LoggerCaller
 }
 
 
@@ -38,7 +39,13 @@ func NewMandrake(c config.Config) Mandrake {
 		}
 	}
 
-	return Mandrake{make(chan string), c.MonitoredDirectory, analyzers, filter}
+	loggers := []plugin.LoggerCaller{}
+	for _, plug := range c.Loggers {
+		logger := plugin.NewLoggerCaller(plug)
+		loggers = append(loggers, logger)
+	}
+
+	return Mandrake{make(chan string), c.MonitoredDirectory, analyzers, filter, loggers}
 }
 
 // ListenAndServe starts the goroutines that perform all of the heavy lifting
