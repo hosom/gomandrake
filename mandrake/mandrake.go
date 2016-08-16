@@ -16,6 +16,7 @@ import (
 // Mandrake is a wrapper struct for the bulk of the application logic
 type Mandrake struct {
 	AnalysisPipeline	chan string
+	LoggingPipeline		chan string
 	MonitoredDirectory	string
 	Analyzers			[]plugin.AnalyzerCaller
 	AnalyzerFilter		map[string][]plugin.AnalyzerCaller
@@ -101,9 +102,23 @@ func (m Mandrake) Analysis(fpath string) {
 	report["analysis"] = analysis
 
 	r, _ := json.Marshal(report)
-	log.Println(string(r))
-	log.Println(string(fs))
-	log.Printf("%s", fpath)
+
+	log.Printf("Analysis of %s complete", fpath)
+	m.LoggingPipeline <- string(report)
+	log.Printf("File analysis sent to logging pipeline.")
+}
+
+// DispatcheLogging sends the call to the Logger plugins to log the completed
+// record of analysis performed by Mandrake
+func (m Mandrake) DispatchLogging() {
+	for record := range m.LoggingPipeline {
+		for _, logger := range m.Loggers {
+			result, err := logger.Log(record)
+			if err != nil {
+				log.Print(err)
+			}
+		}
+	}
 }
 
 // Monitor uses inotify to monitor the MonitoredDirectory for IN_CLOSE_WRITE
