@@ -24,7 +24,7 @@ func (HelloWorld) Analyze(fmeta string, response *string) error {
 }
 
 func main () {
-	log.SetPrefix("[helloworld]")
+	log.SetPrefix("[helloworld] ")
 	p := pie.NewProvider()
 
 	if err := p.RegisterName("HelloWorld", HelloWorld{}); err != nil {
