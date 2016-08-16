@@ -54,6 +54,7 @@ func NewMandrake(c config.Config) Mandrake {
 func (m Mandrake) ListenAndServe() {
 	log.SetPrefix("[mandrake] ")
 	log.Println(m.Analyzers[0])
+	go m.DispatchLogging()
 	go m.DispatchAnalysis()
 	m.Monitor()
 }
@@ -108,7 +109,7 @@ func (m Mandrake) Analysis(fpath string) {
 	log.Printf("File analysis sent to logging pipeline.")
 }
 
-// DispatcheLogging sends the call to the Logger plugins to log the completed
+// DispatchLogging sends the call to the Logger plugins to log the completed
 // record of analysis performed by Mandrake
 func (m Mandrake) DispatchLogging() {
 	for record := range m.LoggingPipeline {
