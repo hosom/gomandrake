@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/rpc/jsonrpc"
 
@@ -13,7 +14,7 @@ type HelloWorld struct {}
 func (HelloWorld) Analyze(fname string, response *string) error {
 	log.Printf("Received call for Hello with name: %q", fname)
 
-	*response = fname
+	*response = fmt.Sprintf("{\"Hello\":%q}", fname)
 
 	return nil
 }
