@@ -53,6 +53,7 @@ func NewAnalyzerCaller(c config.AnalyzerConfig) AnalyzerCaller {
 
 	client, err := pie.StartProviderCodec(jsonrpc.NewClientCodec, os.Stderr, a.Path, a.Args...)
 	if err != nil {
+		log.Println(err)
 		log.Fatalf("Error starting plugin: %s", a.Name)
 	}
 
