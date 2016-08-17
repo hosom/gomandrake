@@ -1,77 +1,85 @@
 #!/usr/bin/python
 
-import pyjsonrpc
+# Description: A sample asynchronous RPC server plugin over STDIO in python that works with natefiinch/pie
+# Usage:
+#   pip install pyjsonrpc
+#   go run master.go
+
+from __future__ import print_function
+import json
 import sys
-import Queue
+import time
+import pyjsonrpc
 import threading
+import Queue
 import signal
+from random import randint
 
-class JsonRpc(pyjsonrpc.JsonRpc):
-	'''
-	JsonRpc server example. It has one method Analyze().
-	'''
+queue = Queue.Queue()
 
-	@pyjsonrpc.rpcmethod
-	def Analyze(self, fmeta):
-		'''
-		Perform analysis on file based on fmeta.
-		'''
+def warning(*objs):
+    """Handy warning log function that prints to stderr for us"""
 
-		fm = json.loads(fmeta)
-		return fm.Path
+    print("[plugin log]", *objs, file=sys.stderr)
+
+def analyze(fmeta):
+	fm = json.loads(fmeta)
+	return '{"Hello from Python":"%s"}' % fm['Filepath']
 
 def worker(line, q, rpc_client):
-	'''
-	Worker thread that handles the RPC server calls when they come in
-	from stdin.
-	'''
-	out = rpc_client.call(line)
-	q.put(out)
+    """Worker thread that handles the RPC server calls fror us when requests come in via stdin"""
+
+    out = rpc_client.call(line)
+    q.put(out)
+    return
 
 def printer(q):
+    """Output handler, printer thread will poll the results queue and output results as they appear."""
 
-	while True:
-		out = q.get()
-		if out == 'kill':
-			return
-		sys.stdout.write(out + '\n')
-		sys.stdout.flush()
+    warning("Printer started")
+    while True:
+        out = q.get()
+        if out == "kill":
+            warning("Kill signal recieved, stopping threads")
+            return
+        sys.stdout.write(out + "\n")
+        sys.stdout.flush()
 
-def init(printer_thread, q):
-	'''
-	Initialize the printer thread and exit signal handler so that we
-	kill long running threads on exit.
-	'''
+    return
 
-	printer_thread.start()
+printer_thread = threading.Thread(target=printer, args=[queue])
+def init():
+    """Initialize the printer thread and exit signal handler so that we kill log running threads on exit"""
 
-	def signal_handler(signal, frame):
-		q.put('kill')
-		printer_thread.join()
-		sys.exit(0)
+    printer_thread.start()
 
-	signal.signal(signal.SIGINT, signal_handler)
+    def signal_handler(signal, frame):
+        queue.put("kill")
+        printer_thread.join()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, signal_handler)
+    return
+
 
 def main():
+    rpc = pyjsonrpc.JsonRpc(methods = {"HelloWorldPython.Analyze" : analyze})
+    line = sys.stdin.readline()
 
-	q = Queue.Queue()
-	printer_thread = threading.Thread(target=printer, args=[q])
+    # This is a synchronous way to poll stdin, but because we
+    # handle lines in threads it can handle out of order requests
+    while line:
+        try:
+            this_input = line
+            t = threading.Thread(target=worker, args=[line, queue, rpc])
+            t.start()
+            line = sys.stdin.readline()
+        except Exception, e:
+            warning("Exception occured: ", e)
+            queue.put("kill")
+            printer_thread.join()
 
-	init(printer_thread, q)
 
-	rpc = JsonRpc()
-	line = sys.stdin.readline()
-
-	while line:
-		try:
-			current_input = line 
-			t = threading.Thread(target=worker, args=[line, q, rpc])
-			t.start()
-			line = sys.stdin.readline()
-		except Exception as e:
-			warning('Exception occrred: ', e)
-			q.put('kill')
-			printer_thread.join()
-
-if __name__ == '__main__':
-	main()
+if __name__ == "__main__":
+    init()
+    main()
