@@ -10,7 +10,7 @@ def analyze(fmeta):
 
 def main():
 
-	plug = Plugin('NewHelloWorldPython')
+	plug = Plugin('HelloWorldPython')
 	plug.listen(analyze)
 
 if __name__ == '__main__':
