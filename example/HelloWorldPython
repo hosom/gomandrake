@@ -2,7 +2,7 @@
 
 import json
 
-from pluginbase import Plugin
+from pymandrake import Plugin
 
 def analyze(fmeta):
 	fm = json.loads(fmeta)
