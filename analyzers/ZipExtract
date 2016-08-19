@@ -3,6 +3,7 @@
 import json
 import zipfile
 import os 
+import shutil
 
 from argparse import ArgumentParser
 from pymandrake import Plugin
@@ -51,13 +52,29 @@ def analyze(fmeta):
 		if not abort:
 			dirname, filename = os.path.split(fm['Filepath'])
 			for fname in analysis['contained_files']:
+
+				is_directory = os.path.basename(fname)
+				if not is_directory:
+					continue
+
 				# Python's zip modules is smart enough to know whether
 				# a password is required to open a zip file, so we always
 				# pass one and just let the library sort this out.
 				try:
-					z.extract(fname, dirname, pwd=PASSWORD)
+					with open(os.path.join(dirname, os.path.basename(fname)), 'wb') as f:
+						f.write(z.read(fname, pwd=PASSWORD))
 				except RuntimeError as e:
 					analysis['errors'].append('Runtime error: %s' % e[0])
+
+				'''
+									with z.open(fname, pwd=PASSWORD) as zf:
+
+						with open(os.path.join(dirname, os.path.basename(fname))) as f:
+							shutil.copyfileobj(zf, f)
+				'''
+				#try:
+				#	z.extract(fname, dirname, pwd=PASSWORD)
+				
 	return json.dumps(analysis)
 
 def main():
