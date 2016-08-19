@@ -4,6 +4,7 @@ import json
 import zipfile
 import os 
 
+from argparse import ArgumentParser
 from pymandrake import Plugin
 
 # The maximum number of files this plugin will extract.
@@ -61,6 +62,30 @@ def analyze(fmeta):
 
 def main():
 	'''Main body of the plugin.'''
+
+	# Because of the way the pymandrake API works, configuration values must
+	# be stored as global variables. This is goofy at first, but works out 
+	# fine for the simple use cases so far.
+
+	global MAX_EXTRACTED_FILES
+	global MAX_EXTRACTED_SIZE
+	global PASSWORD
+
+	parser = ArgumentParser(description='Mandrake plugin for zip files.')
+	parser.add_argument('--max-files', type=int,
+						default=MAX_EXTRACTED_FILES,
+						help='the most files this plugin will extract')
+	parser.add_argument('--max-size', type=int,
+						default=MAX_EXTRACTED_SIZE,
+						help='the most data this plugin will extract')
+	parser.add_argument('--password', type=str,
+						default=PASSWORD,
+						help='a password for extracting protected zip files')
+	args = parser.parse_args()
+
+	MAX_EXTRACTED_FILES = args.max_files
+	MAX_EXTRACTED_SIZE = args.max_size
+	PASSWORD = args.password
 
 	plug = Plugin('ZipExtract')
 	plug.listen(analyze)
