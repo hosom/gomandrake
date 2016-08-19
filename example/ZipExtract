@@ -4,7 +4,7 @@ import json
 import zipfile
 import os 
 
-from pluginbase import Plugin
+from pymandrake import Plugin
 
 # The maximum number of files this plugin will extract.
 MAX_EXTRACTED_FILES = 30
