@@ -1,0 +1,69 @@
+#!/usr/bin/python 
+
+import json
+import zipfile
+import os 
+
+from pymandrake import Plugin
+
+# The maximum number of files this plugin will extract.
+MAX_EXTRACTED_FILES = 30
+# The maximum total size of files that this plugin will extract.
+MAX_EXTRACTED_SIZE = 50000000
+# A password to use to attempt to extract password protected zip files.
+PASSWORD = 'infected'
+
+def analyze(fmeta):
+	'''Analyze and extract zip files.
+
+	Args:
+		fmeta (string): A json string describing files.
+	Returns:
+		string: A json string describing analysis results.
+	'''
+	fm = json.loads(fmeta)
+	abort = False
+
+	analysis = dict()
+	analysis['errors'] = []
+	with zipfile.ZipFile(fm['Filepath']) as z:
+		# The filename included in this zip file
+		analysis['contained_files'] = z.namelist()
+		# Check for too many files. Extracting too many files could
+		# result in a massive number of issues.
+		analysis['contained_file_count'] = len(analysis['contained_files'])
+		if analysis['contained_file_count'] > MAX_EXTRACTED_FILES:
+			analysis['errors'].append('too many files')
+			# Cancel analysis if there are too many files.
+			abort = True
+		# Check for maximum extracted size. Extracting files too large is 
+		# also a potential problem.
+		analysis['extracted_size'] = 0
+		for info in z.infolist():
+			analysis['extracted_size'] = analysis['extracted_size'] + info.file_size
+			if analysis['extracted_size'] > MAX_EXTRACTED_SIZE:
+				analysis['errors'].append('extracted files are too big')
+				# Cancel analysis if extracted files are too big.
+				abort = True
+		# If we haven't found a reason to cancel analysis up until now
+		# continue and extract all the files from the zip file.
+		if not abort:
+			dirname, filename = os.path.split(fm['Filepath'])
+			for fname in analysis['contained_files']:
+				# Python's zip modules is smart enough to know whether
+				# a password is required to open a zip file, so we always
+				# pass one and just let the library sort this out.
+				try:
+					z.extract(fname, dirname, pwd=PASSWORD)
+				except RuntimeError as e:
+					analysis['errors'].append('Runtime error: %s' % e[0])
+	return json.dumps(analysis)
+
+def main():
+	'''Main body of the plugin.'''
+
+	plug = Plugin('ZipExtract')
+	plug.listen(analyze)
+
+if __name__ == '__main__':
+	main()
