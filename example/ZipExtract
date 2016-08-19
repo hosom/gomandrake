@@ -33,7 +33,7 @@ def analyze(fmeta):
 		# result in a massive number of issues.
 		analysis['contained_file_count'] = len(analysis['contained_files'])
 		if analysis['contained_file_count'] > MAX_EXTRACTED_FILES:
-			analysis['errors'] = analysis['errors'].append('too many files')
+			analysis['errors'].append('too many files')
 			# Cancel analysis if there are too many files.
 			abort = True
 		# Check for maximum extracted size. Extracting files too large is 
@@ -42,7 +42,7 @@ def analyze(fmeta):
 		for info in z.infolist():
 			analysis['extracted_size'] = analysis['extracted_size'] + info.file_size
 			if analysis['extracted_size'] > MAX_EXTRACTED_SIZE:
-				analysis['errors'] = analysis['errors'].append('extracted files are too big')
+				analysis['errors'].append('extracted files are too big')
 				# Cancel analysis if extracted files are too big.
 				abort = True
 		# If we haven't found a reason to cancel analysis up until now
@@ -56,7 +56,7 @@ def analyze(fmeta):
 				try:
 					z.extract(fname, dirname, pwd=PASSWORD)
 				except RuntimeError as e:
-					analysis['errors'] = analysis['errors'].append('Runtime error: %s' % e[0])
+					analysis['errors'].append('Runtime error: %s' % e[0])
 	return json.dumps(analysis)
 
 def main():
