@@ -1,0 +1,51 @@
+#!/usr/bin/python
+
+import json
+import os
+
+from argparse import ArgumentParser
+from pymandrake import Plugin
+
+HASH_TYPE = 'Sha256'
+
+def log(fmeta):
+	'''Rename files to their hash based on hash type.'''
+
+	fm = json.loads(fmeta)
+
+	if os.path.exists(fm.get('Filepath')):
+		dirname, filename = os.path.split(fm.get('Filepath'))
+
+		ext = filename.split('.')[-1]
+
+		filehash = fm.get(HASH_TYPE)
+
+		new_name = '%s.%s' % (filehash, ext)
+		new_full_path = '%s/%s' % (dirname, new_name)
+
+		os.rename(fm.get('Filepath'), new_full_path)
+
+	return "true"
+
+
+def main():
+	'''Main body of the plugin.'''
+
+	global HASH_TYPE
+
+	parser = ArgumentParser(description='Mandrake plugin to rename files to their hash.')
+	parser.add_argument('--hash', type=str,
+					default=HASH_TYPE,
+					help='SHA1 MD5 or SHA256')
+	args = parser.parse_args()
+
+	HASH_TYPE = args.hash.lower()
+
+	HASH_TYPE = HASH_TYPE.capitalize()
+
+	plug = Plugin('RenameToHash', plugin_type='Logger')
+	plug.listen(log)
+
+
+if __name__ == '__main__':
+	main()
