@@ -1,0 +1,52 @@
+#!/usr/bin/python
+
+import json
+import yara
+
+from argparse import ArgumentParser
+from pymandrake import Plugin
+
+RULES_FILE = 'rules.yar'
+RULES = None
+
+def analyze(fmeta):
+	'''Analyze a file utilizing YARA'''
+
+	fm = json.loads(fmeta)
+
+	analysis = dict()
+	analysis['errors'] = []
+
+	try:
+		matches = RULES.match(fm.get('Filepath'))
+	except:
+		matches = []
+		analysis['matches'] = matches
+		analysis['errors'].append('error performing yara analysis')
+		return json.dumps(analysis)
+
+	analysis['matches'] = [str(match) for match in matches]
+
+	return json.dumps(analysis)
+
+def main():
+
+	global RULES_FILE
+	global RULES
+
+	parser = ArgumentParser(description='Mandrake plugin for YARA')
+	parser.add_argument('--rules_file', type=str, 
+						default=RULES_FILE,
+						help='file where yara rules are loaded from')
+	args = parser.parse_args()
+
+	# Error handling needs to be done here to make sure a real rules file is
+	# being loaded.
+	RULES_FILE = args.rules_file
+	RULES = yara.compile(RULES_FILE)
+
+	plug = Plugin('YARA')
+	plug.listen(analyze)
+
+if __name__ == '__main__':
+	main()
