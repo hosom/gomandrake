@@ -152,6 +152,11 @@ func (m Mandrake) Monitor() {
 // resulting Map
 func MapFromJSON(s string) map[string]interface{} {
 	log.Printf("Performing mapping with string: %s", s)
+	if s == "" {
+		log.Println("Encountered invalid output from plugin.")
+		return map[string]interface{}
+	}
+
 	var f interface{}
 	json.Unmarshal([]byte(s), &f)
 	m := f.(map[string]interface{})
