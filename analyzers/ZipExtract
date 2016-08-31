@@ -6,7 +6,7 @@ import os
 import shutil
 
 from argparse import ArgumentParser
-from pymandrake import Plugin
+from pymandrake import Plugin, to_unicode
 
 # The maximum number of files this plugin will extract.
 MAX_EXTRACTED_FILES = 30
@@ -30,7 +30,7 @@ def analyze(fmeta):
 	analysis['errors'] = []
 	with zipfile.ZipFile(fm['Filepath']) as z:
 		# The filename included in this zip file
-		analysis['contained_files'] = z.namelist()
+		analysis['contained_files'] = [to_unicode(name) for name in z.namelist()]
 		# Check for too many files. Extracting too many files could
 		# result in a massive number of issues.
 		analysis['contained_file_count'] = len(analysis['contained_files'])
@@ -65,15 +65,6 @@ def analyze(fmeta):
 						f.write(z.read(fname, pwd=PASSWORD))
 				except RuntimeError as e:
 					analysis['errors'].append('Runtime error: %s' % e[0])
-
-				'''
-									with z.open(fname, pwd=PASSWORD) as zf:
-
-						with open(os.path.join(dirname, os.path.basename(fname))) as f:
-							shutil.copyfileobj(zf, f)
-				'''
-				#try:
-				#	z.extract(fname, dirname, pwd=PASSWORD)
 				
 	return json.dumps(analysis)
 
