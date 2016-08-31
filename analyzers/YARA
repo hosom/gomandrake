@@ -2,6 +2,7 @@
 
 import json
 import yara
+import sys
 
 from argparse import ArgumentParser
 from pymandrake import Plugin
@@ -40,12 +41,14 @@ def main():
 						help='file where yara rules are loaded from')
 	args = parser.parse_args()
 
-	# Error handling needs to be done here to make sure a real rules file is
-	# being loaded.
-	RULES_FILE = args.rules_file
-	RULES = yara.compile(RULES_FILE)
-
 	plug = Plugin('YARA')
+
+	RULES_FILE = args.rules_file
+	try:
+		RULES = yara.compile(RULES_FILE)
+	except yara.Error:
+		plug.log('Unable to compile yara rules file %s' % (RULES_FILE))
+
 	plug.listen(analyze)
 
 if __name__ == '__main__':
