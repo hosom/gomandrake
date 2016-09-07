@@ -7,11 +7,21 @@ import sys
 from argparse import ArgumentParser
 from pymandrake import Plugin
 
+# RULES_FILE is the base yara rules file that is compiled and used to 
+# match against. This accepts the include keyword in yara, so rules files can
+# be nested and loaded from multiple files.
 RULES_FILE = 'rules.yar'
+# RULES is the yara rules object once the rules are loaded in and compiled
 RULES = None
 
 def analyze(fmeta):
-	'''Analyze a file utilizing YARA'''
+	'''Analyze a file utilizing YARA.
+
+	Args:
+		fmeta (string): A json string describing files.
+	Returns:
+		string: A json string describing analysis results.
+	'''
 
 	fm = json.loads(fmeta)
 
@@ -20,10 +30,10 @@ def analyze(fmeta):
 
 	try:
 		matches = RULES.match(fm.get('Filepath'))
-	except:
+	except yara.Error as e:
 		matches = []
 		analysis['matches'] = matches
-		analysis['errors'].append('error performing yara analysis')
+		analysis['errors'].append('YARA Runtime error: %s' % e)
 		return json.dumps(analysis)
 
 	analysis['matches'] = [str(match) for match in matches]
@@ -32,6 +42,7 @@ def analyze(fmeta):
 
 def main():
 
+	# Include global args in current scope.
 	global RULES_FILE
 	global RULES
 
@@ -41,9 +52,10 @@ def main():
 						help='file where yara rules are loaded from')
 	args = parser.parse_args()
 
-	plug = Plugin('YARA')
 
+	plug = Plugin('YARA')
 	RULES_FILE = args.rules_file
+
 	try:
 		RULES = yara.compile(RULES_FILE)
 	except yara.Error:
