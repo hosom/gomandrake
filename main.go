@@ -1,7 +1,7 @@
 /*
 
 Main entry point for the `mandrake` daemon. Loads specified configuration
-and listens for Input plugins to pass files to be analyzed by Analyzer 
+and listens for Input plugins to pass files to be analyzed by Analyzer
 plugins. Analysis is logged by Logger plugins.
 
 */
@@ -26,7 +26,7 @@ const (
 func main() {
 
 	config_path := flag.String("config", filepath.FromSlash("/etc/mandrake.conf"),
-								"configuration file")
+		"configuration file")
 
 	version := flag.Bool("version", false, "Output version and exit.")
 	flag.Parse()

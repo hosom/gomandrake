@@ -1,34 +1,33 @@
 /*
 
-*/
+ */
 
 package plugin
-
 
 import (
 	"fmt"
 	"log"
-	"os"
 	"net/rpc"
 	"net/rpc/jsonrpc"
+	"os"
 	"path/filepath"
 
-	"github.com/natefinch/pie"
 	"github.com/hosom/gomandrake/config"
+	"github.com/natefinch/pie"
 )
 
-// AnalyzerCaller is a wrapper specifically intended to be utilized for 
+// AnalyzerCaller is a wrapper specifically intended to be utilized for
 // wrapping Analyzer plugins.
 type AnalyzerCaller struct {
-	Name 		string
-	Path 		string
-	Args 		[]string
-	MimeFilter	[]string
-	client 		*rpc.Client
+	Name       string
+	Path       string
+	Args       []string
+	MimeFilter []string
+	client     *rpc.Client
 }
 
 // allTypeAnalyzer is a function to check if a plugin should be ran against
-// all mimetypes. If this is the case, then we will make some behind the 
+// all mimetypes. If this is the case, then we will make some behind the
 // scenes configuration optimizations to prevent multiple executions of the
 // same plugin.
 func allTypeAnalyzer(m []string) bool {
@@ -63,20 +62,20 @@ func NewAnalyzerCaller(c config.AnalyzerConfig) AnalyzerCaller {
 
 // Analyze sends a filepath location to an analyzer plugin for the plugin
 // to perform analysis on.
-func  (a AnalyzerCaller) Analyze(fmeta string) (result string, err error) {
+func (a AnalyzerCaller) Analyze(fmeta string) (result string, err error) {
 	log.Printf("Dispatching call to analyzer: %s", a.Name)
 	err = a.client.Call(fmt.Sprintf("%s.Analyze", a.Name), fmeta, &result)
-	
+
 	return result, err
 }
 
-// LoggerCaller is a wrapper specifically intended to be utilized for 
+// LoggerCaller is a wrapper specifically intended to be utilized for
 // wrapping Logger plugins.
 type LoggerCaller struct {
-	Name 		string
-	Path 		string
-	Args		[]string
-	client 		*rpc.Client
+	Name   string
+	Path   string
+	Args   []string
+	client *rpc.Client
 }
 
 func NewLoggerCaller(c config.LoggerConfig) LoggerCaller {
@@ -90,15 +89,15 @@ func NewLoggerCaller(c config.LoggerConfig) LoggerCaller {
 		log.Fatalf("Error starting plugin: %s", l.Name)
 	}
 
-	l.client = client 
+	l.client = client
 	return l
 }
 
-// Log sends a json message to a logger plugin describing analysis that 
+// Log sends a json message to a logger plugin describing analysis that
 // has been completed.
 func (l LoggerCaller) Log(msg string) (result string, err error) {
 	log.Printf("Dispatching call to logger: %s", l.Name)
 	err = l.client.Call(fmt.Sprintf("%s.Log", l.Name), msg, &result)
-	
+
 	return result, err
 }

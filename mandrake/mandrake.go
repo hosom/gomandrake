@@ -1,30 +1,29 @@
 /*
 
-*/
+ */
 package mandrake
 
 import (
-	"log"
 	"encoding/json"
+	"log"
 
-	"golang.org/x/exp/inotify"
 	"github.com/hosom/gomandrake/config"
 	"github.com/hosom/gomandrake/filemeta"
 	"github.com/hosom/gomandrake/plugin"
+	"golang.org/x/exp/inotify"
 )
 
 // Mandrake is a wrapper struct for the bulk of the application logic
 type Mandrake struct {
-	AnalysisPipeline	chan string
-	LoggingPipeline		chan string
-	MonitoredDirectory	string
-	Analyzers			[]plugin.AnalyzerCaller
-	AnalyzerFilter		map[string][]plugin.AnalyzerCaller
-	Loggers				[]plugin.LoggerCaller
+	AnalysisPipeline   chan string
+	LoggingPipeline    chan string
+	MonitoredDirectory string
+	Analyzers          []plugin.AnalyzerCaller
+	AnalyzerFilter     map[string][]plugin.AnalyzerCaller
+	Loggers            []plugin.LoggerCaller
 }
 
-
-// NewMandrake creates and returns a Mandrake struct utilizing a passed 
+// NewMandrake creates and returns a Mandrake struct utilizing a passed
 // parsed configuration file to create the correct fields.
 func NewMandrake(c config.Config) Mandrake {
 	analyzers := []plugin.AnalyzerCaller{}
@@ -50,7 +49,7 @@ func NewMandrake(c config.Config) Mandrake {
 }
 
 // ListenAndServe starts the goroutines that perform all of the heavy lifting
-// including Monitor() and DispatchAnalysis(). 
+// including Monitor() and DispatchAnalysis().
 func (m Mandrake) ListenAndServe() {
 	log.SetPrefix("[mandrake] ")
 	go m.DispatchLogging()
@@ -60,7 +59,7 @@ func (m Mandrake) ListenAndServe() {
 
 // DispatchAnalysis intelligently sends a new file to registered plugins so
 // that it can be analyzed.
-func (m Mandrake) DispatchAnalysis() {	
+func (m Mandrake) DispatchAnalysis() {
 	for fpath := range m.AnalysisPipeline {
 		go m.Analysis(fpath)
 	}
@@ -122,7 +121,7 @@ func (m Mandrake) DispatchLogging() {
 }
 
 // Monitor uses inotify to monitor the MonitoredDirectory for IN_CLOSE_WRITE
-// events. Files written to the MonitoredDirectory will be sent to the 
+// events. Files written to the MonitoredDirectory will be sent to the
 // analysis pipeline to be analyzed.
 func (m Mandrake) Monitor() {
 	log.Println("starting inotify watcher")
@@ -139,9 +138,9 @@ func (m Mandrake) Monitor() {
 
 	for {
 		select {
-		case ev := <- watcher.Event:
+		case ev := <-watcher.Event:
 			m.AnalysisPipeline <- ev.Name
-		case err := <- watcher.Error:
+		case err := <-watcher.Error:
 			log.Printf("inotify error: %s", err)
 		}
 	}

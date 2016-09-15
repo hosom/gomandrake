@@ -1,15 +1,15 @@
 /*
 
-*/
+ */
 package filemeta
 
 import (
-	"fmt"
-	"io"
-	"os"
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
+	"fmt"
+	"io"
+	"os"
 
 	"github.com/hosom/gomagic"
 )
@@ -17,11 +17,11 @@ import (
 // FileMeta holds basic information about a file that allows Mandrake
 // to pass that metadata to plugins for usage within the plugin
 type FileMeta struct {
-	Filepath	string
-	Md5			string
-	Sha1		string
-	Sha256		string
-	Mime		string
+	Filepath string
+	Md5      string
+	Sha1     string
+	Sha256   string
+	Mime     string
 }
 
 // NewFileMeta creates and returns a FileMeta struct with all fields

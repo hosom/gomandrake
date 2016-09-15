@@ -4,30 +4,30 @@ Reading of configuration files.
 package config
 
 import (
-	"io/ioutil"
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 )
 
 // Config is a json-decoded configuration for running mandrake
 type Config struct {
-	MonitoredDirectory 		string
-	Analyzers				[]AnalyzerConfig
-	Loggers					[]LoggerConfig
+	MonitoredDirectory string
+	Analyzers          []AnalyzerConfig
+	Loggers            []LoggerConfig
 }
 
 // AnalyzerConfig is a json-decoded configuration for a plugin
 type AnalyzerConfig struct {
-	Path				string
-	Args				[]string
-	MimeFilter			[]string
+	Path       string
+	Args       []string
+	MimeFilter []string
 }
 
 // LoggerConfig is a json-decoded configuration for a logger plugin
 type LoggerConfig struct {
-	Path				string
-	Args				[]string
+	Path string
+	Args []string
 }
 
 // ReadConfigFile reads in the given JSON encoded configuration file and
@@ -40,7 +40,7 @@ func ReadConfigFile(filename string) (*Config, error) {
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
-	
+
 	var out Config
 	if err := dec.Decode(&out); err != nil {
 		return nil, fmt.Errorf("could not decode config file %q: %v", filename, err)

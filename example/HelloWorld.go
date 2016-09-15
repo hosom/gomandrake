@@ -1,17 +1,16 @@
-
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
-	"encoding/json"
 	"net/rpc/jsonrpc"
 
 	"github.com/hosom/gomandrake/filemeta"
 	"github.com/natefinch/pie"
 )
 
-type HelloWorld struct {}
+type HelloWorld struct{}
 
 func (HelloWorld) Analyze(fmeta string, response *string) error {
 	var fm filemeta.FileMeta
@@ -23,7 +22,7 @@ func (HelloWorld) Analyze(fmeta string, response *string) error {
 	return nil
 }
 
-func main () {
+func main() {
 	log.SetPrefix("[helloworld] ")
 	p := pie.NewProvider()
 
