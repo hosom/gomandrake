@@ -7,6 +7,7 @@ Doc is an analyzer utilized to analyze Microsoft document types.
 #### Requirements
 
 [oletools PyPi page](https://pypi.python.org/pypi/oletools/0.47)
+
 [oletools Github page](https://github.com/decalage2/oletools)
 
 ```
@@ -20,6 +21,7 @@ PE is an analyzer utilized to analyze MS DOS executable files and DLLs.
 #### Requirements 
 
 [pefile PyPi](https://pypi.python.org/pypi/pefile/2016.3.28)
+
 [pefile Github](https://github.com/erocarrera/pefile)
 
 ```
