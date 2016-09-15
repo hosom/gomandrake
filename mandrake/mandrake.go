@@ -105,7 +105,7 @@ func (m Mandrake) Analysis(fpath string) {
 
 	log.Printf("Analysis of %s complete", fpath)
 	m.LoggingPipeline <- string(r)
-	log.Printf("File analysis sent to logging pipeline.")
+	log.Printf("Analysis of %s sent to logging pipeline.", fpath)
 }
 
 // DispatchLogging sends the call to the Logger plugins to log the completed
@@ -150,7 +150,6 @@ func (m Mandrake) Monitor() {
 // MapFromJSON accepts an anonymous JSON object as a string and returns the
 // resulting Map
 func MapFromJSON(s string) map[string]interface{} {
-	log.Printf("Performing mapping with string: %s", s)
 	if s == "" {
 		log.Println("Encountered invalid output from plugin.")
 		return make(map[string]interface{})
@@ -159,6 +158,5 @@ func MapFromJSON(s string) map[string]interface{} {
 	var f interface{}
 	json.Unmarshal([]byte(s), &f)
 	m := f.(map[string]interface{})
-	log.Printf("Mapping complete: %s", m)
 	return m
 }
