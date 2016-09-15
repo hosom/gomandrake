@@ -53,7 +53,6 @@ func NewMandrake(c config.Config) Mandrake {
 // including Monitor() and DispatchAnalysis(). 
 func (m Mandrake) ListenAndServe() {
 	log.SetPrefix("[mandrake] ")
-	log.Println(m.Analyzers[0])
 	go m.DispatchLogging()
 	go m.DispatchAnalysis()
 	m.Monitor()
