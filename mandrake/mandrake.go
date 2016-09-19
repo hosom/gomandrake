@@ -87,7 +87,10 @@ func (m Mandrake) Analysis(fpath string) {
 		if err != nil {
 			log.Print(err)
 		}
-		analysis = append(analysis, MapFromJSON(result))
+		parsedResults := MapFromJSON(result)
+		resultsObj := make(map[string]interface{})
+		resultsObj[analyzer.Name] = parsedResults
+		analysis = append(analysis, resultsObj)
 	}
 
 	for _, analyzer := range m.AnalyzerFilter[fmeta.Mime] {
@@ -96,7 +99,10 @@ func (m Mandrake) Analysis(fpath string) {
 		if err != nil {
 			log.Print(err)
 		}
-		analysis = append(analysis, MapFromJSON(result))
+		parsedResults := MapFromJSON(result)
+		resultsObj := make(map[string]interface{})
+		resultsObj[analyzer.Name] = parsedResults
+		analysis = append(analysis, resultsObj)
 	}
 
 	report := MapFromJSON(fstring)
