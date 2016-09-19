@@ -82,6 +82,7 @@ func (m Mandrake) Analysis(fpath string) {
 	var analysis []map[string]interface{}
 
 	for _, analyzer := range m.AnalyzerFilter["all"] {
+		log.Printf("%s : dispatching call to analyzer %s", fpath, analyzer.Name)
 		result, err := analyzer.Analyze(fstring)
 		if err != nil {
 			log.Print(err)
@@ -90,6 +91,7 @@ func (m Mandrake) Analysis(fpath string) {
 	}
 
 	for _, analyzer := range m.AnalyzerFilter[fmeta.Mime] {
+		log.Printf("%s : dispatching call to analyzer %s", fpath, analyzer.Name)
 		result, err := analyzer.Analyze(fstring)
 		if err != nil {
 			log.Print(err)

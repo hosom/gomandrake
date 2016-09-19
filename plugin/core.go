@@ -63,7 +63,6 @@ func NewAnalyzerCaller(c config.AnalyzerConfig) AnalyzerCaller {
 // Analyze sends a filepath location to an analyzer plugin for the plugin
 // to perform analysis on.
 func (a AnalyzerCaller) Analyze(fmeta string) (result string, err error) {
-	log.Printf("Dispatching call to analyzer: %s", a.Name)
 	err = a.client.Call(fmt.Sprintf("%s.Analyze", a.Name), fmeta, &result)
 
 	return result, err
